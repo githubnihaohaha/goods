@@ -59,6 +59,7 @@ public class SupplierServiceImpl implements SupplierService {
         
         List<Supplier> page = ListPageUtils.page(supplierList, pageSize, pageNum);
         
+        assert page != null : "没有数据!";
         return new PageVO<>(page.size(), page);
     }
 }
