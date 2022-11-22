@@ -50,11 +50,11 @@ public interface ProductCategoryService {
      *
      * @param productCategoryVO
      */
-    void updateCategory(ProductCategoryVO productCategoryVO);
+    void updateCategory(ProductCategory productCategoryVO);
     
     /**
      * 通过id移除节点(判断是否有子节点,有则不能删除)
      * @param id
      */
-    void deleteById(Long id);
+    void deleteById(Long id) throws BusinessException;
 }

@@ -1,7 +1,5 @@
 package com.goods.business.service.imp;
 
-import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.page.PageMethod;
 import com.goods.business.converter.ProductCategoryConverter;
 import com.goods.business.mapper.ProductCategoryMapper;
 import com.goods.business.service.ProductCategoryService;
@@ -103,20 +101,22 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     /**
      * 更新类别信息
      *
-     * @param productCategoryVO
+     * @param productCategory
      */
     @Override
-    public void updateCategory(ProductCategoryVO productCategoryVO) {
+    public void updateCategory(ProductCategory productCategory) {
         
-        ProductCategory productCategory = new ProductCategory();
-        BeanUtils.copyProperties(productCategoryVO, productCategory);
+        if (productCategory != null) {
+            // 设置修改时间
+            productCategory.setModifiedTime(new Date());
+            
+            // 只更新对象中有数据的字段,没有传递数据的字段不会被更新
+            productCategoryMapper.updateByPrimaryKeySelective(productCategory);
+        }
+
+//     productCategoryMapper.updateByPrimaryKeySelective(productCategory);
         
-        // 只更新对象中有数据的字段,没有传递数据的字段不会被更新
-        productCategoryMapper.updateByPrimaryKeySelective(productCategory); //TODO 修改后数据库时间会有误
-        
-        // 会根据对象提供的参数覆盖所有字段的值
-//        productCategoryMapper.updateByPrimaryKey(productCategory);
-        
+    
     }
     
     /**
@@ -125,20 +125,19 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
      * @param id
      */
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(Long id) throws BusinessException {
         
         
         ProductCategory category = new ProductCategory();
         category.setPid(id);
         
         
-        // TODO 根据结果返回不同的值,让前台分辨是否删除成功
         if (productCategoryMapper.selectCount(category) > 0) {
-            return;
+            throw new BusinessException(BusinessCodeEnum.PARAMETER_ERROR);
         }
         
         productCategoryMapper.deleteByPrimaryKey(id);
-    
+        
     }
     
     

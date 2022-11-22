@@ -91,25 +91,25 @@ public class ProductCategoryController {
     /**
      * 修改商品类别信息
      *
-     * @param productCategoryVO 值传递对象
+     * @param category 值传递对象
      * @return
      */
     @PutMapping("/update/{id}")
     public ResponseBean updateCategory(@PathVariable Long id,
-                                       @RequestBody ProductCategoryVO productCategoryVO) throws BusinessException {
-    
-        if (productCategoryVO == null) {
+                                       @RequestBody ProductCategory category) throws BusinessException {
+        
+        if (category == null) {
             throw new BusinessException(BusinessCodeEnum.PARAMETER_ERROR);
         }
         
-        productCategoryService.updateCategory(productCategoryVO);
+        productCategoryService.updateCategory(category);
         
         return ResponseBean.success();
     }
     
     
     @DeleteMapping("/delete/{id}")
-    public ResponseBean deleteById(@PathVariable Long id){
+    public ResponseBean deleteById(@PathVariable Long id) throws BusinessException {
         productCategoryService.deleteById(id);
         return ResponseBean.success();
     }

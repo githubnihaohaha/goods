@@ -3,6 +3,8 @@ package com.goods.business.service.imp;
 import com.github.pagehelper.PageHelper;
 import com.goods.business.mapper.SupplierMapper;
 import com.goods.business.service.SupplierService;
+import com.goods.common.error.BusinessCodeEnum;
+import com.goods.common.error.BusinessException;
 import com.goods.common.model.business.Supplier;
 import com.goods.common.utils.ListPageUtils;
 import com.goods.common.vo.business.SupplierVO;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -62,4 +65,67 @@ public class SupplierServiceImpl implements SupplierService {
         assert page != null : "没有数据!";
         return new PageVO<>(page.size(), page);
     }
+    
+    /**
+     * 添加方法
+     *
+     * @param supplierVO 供应商值对象
+     * @return
+     */
+    @Override
+    public void saveSupplierInfo(SupplierVO supplierVO) {
+        
+        Supplier supplier = new Supplier();
+        BeanUtils.copyProperties(supplierVO, supplier);
+        
+        supplier.setCreateTime(new Date());
+        supplier.setModifiedTime(new Date());
+        
+        supplierMapper.insertSelective(supplier);
+        
+    }
+    
+    /**
+     * 通过id查询供应商Supplier
+     *
+     * @param id primary Key
+     * @return Supplier实体类
+     */
+    @Override
+    public Supplier getSupplierById(Long id) throws BusinessException {
+        Supplier supplier = supplierMapper.selectByPrimaryKey(id);
+        if (supplier == null) {
+            throw new BusinessException(BusinessCodeEnum.PARAMETER_ERROR);
+        }
+        return supplier;
+    }
+    
+    /**
+     * 更新实体类信息
+     *
+     * @param supplier
+     */
+    @Override
+    public void updateSupplierInfo(Supplier supplier) {
+        
+        if (supplier != null) {
+            supplier.setModifiedTime(new Date());
+            supplierMapper.updateByPrimaryKeySelective(supplier);
+        }
+        
+    }
+    
+    /**
+     * 通过主键移除供应商信息
+     *
+     * @param id primaryKey
+     */
+    @Override
+    public void deleteSupplierById(Long id) {
+        
+        supplierMapper.deleteByPrimaryKey(id);
+        
+    }
+    
+    
 }
